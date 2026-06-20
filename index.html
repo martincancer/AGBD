@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bases de Datos — Material de la materia</title>
+<meta name="description" content="Material de apoyo para la Tecnicatura Superior en Administración y Gestión de Bases de Datos: clases, ejemplos en SQL Server y ejercicios." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<div data-site-header></div>
+
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <p class="eyebrow">Tecnicatura Superior en Desarrollo de Software · 1er. Año</p>
+      <h1>Administración y Gestión de Bases de Datos</h1>
+      <p class="lede">Material de apoyo de la materia: el desarrollo de cada clase, ejemplos resueltos en SQL Server y contenido para repasar.</p>
+      <div class="tag-row">
+        <span class="tag">SQL Server</span>
+        <span class="tag">Modelo relacional</span>
+        <span class="tag">Base de datos</span>
+      </div>
+    </div>
+
+    <svg class="hero-diagram" viewBox="0 0 340 460" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagrama: un Cliente tiene muchos Pedidos, un Pedido tiene muchos Detalles">
+      <style>
+        .erd-box   { fill: var(--c-surface); stroke: var(--c-border); stroke-width: 1; }
+        .erd-head  { fill: var(--c-surface-2); }
+        .erd-title { font-family: var(--f-mono); font-size: 12px; font-weight: 700; fill: #ffffff; letter-spacing: 0.04em; }
+        .erd-pk    { font-family: var(--f-mono); font-size: 11px; font-weight: 600; fill: var(--c-gold); }
+        .erd-fk    { font-family: var(--f-mono); font-size: 11px; fill: var(--c-teal); }
+        .erd-field { font-family: var(--f-mono); font-size: 11px; fill: var(--c-text-dim); }
+        .erd-line  { stroke: var(--c-teal); stroke-width: 1.6; fill: none; stroke-dasharray: 4 4; }
+        .erd-rel   { font-family: var(--f-mono); font-size: 11px; font-weight: 700; fill: var(--c-teal); }
+      </style>
+
+      <path class="erd-line" d="M 90 108 L 90 150">
+        <animate attributeName="stroke-dashoffset" from="0" to="-16" dur="1.4s" repeatCount="indefinite" />
+      </path>
+      <text class="erd-rel" x="98" y="118">1</text>
+      <text class="erd-rel" x="98" y="146">N</text>
+
+      <g>
+        <rect class="erd-box" x="20" y="20" width="160" height="88" rx="8" />
+        <rect class="erd-head" x="20" y="20" width="160" height="28" rx="8" />
+        <rect class="erd-head" x="20" y="38" width="160" height="10" />
+        <text class="erd-title" x="34" y="39">CLIENTE</text>
+        <text class="erd-pk" x="34" y="68">PK&#160; id_cliente</text>
+        <text class="erd-field" x="34" y="86">&#160;&#160;&#160; nombre</text>
+      </g>
+
+      <path class="erd-line" d="M 170 268 L 170 308">
+        <animate attributeName="stroke-dashoffset" from="0" to="-16" dur="1.4s" repeatCount="indefinite" />
+      </path>
+      <text class="erd-rel" x="178" y="278">1</text>
+      <text class="erd-rel" x="178" y="304">N</text>
+
+      <g>
+        <rect class="erd-box" x="80" y="150" width="180" height="118" rx="8" />
+        <rect class="erd-head" x="80" y="150" width="180" height="28" rx="8" />
+        <rect class="erd-head" x="80" y="168" width="180" height="10" />
+        <text class="erd-title" x="94" y="169">PEDIDO</text>
+        <text class="erd-pk" x="94" y="198">PK&#160; id_pedido</text>
+        <text class="erd-fk" x="94" y="216">FK&#160; id_cliente</text>
+        <text class="erd-field" x="94" y="234">&#160;&#160;&#160; fecha</text>
+        <text class="erd-field" x="94" y="252">&#160;&#160;&#160; total</text>
+      </g>
+
+      <g>
+        <rect class="erd-box" x="30" y="308" width="220" height="118" rx="8" />
+        <rect class="erd-head" x="30" y="308" width="220" height="28" rx="8" />
+        <rect class="erd-head" x="30" y="326" width="220" height="10" />
+        <text class="erd-title" x="44" y="327">DETALLE_PEDIDO</text>
+        <text class="erd-pk" x="44" y="356">PK&#160; id_detalle</text>
+        <text class="erd-fk" x="44" y="374">FK&#160; id_pedido</text>
+        <text class="erd-field" x="44" y="392">&#160;&#160;&#160; cantidad</text>
+        <text class="erd-field" x="44" y="410">&#160;&#160;&#160; precio_unitario</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<section id="plan">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">El plan de la materia</p>
+      <h2>Clases disponibles</h2>
+      <p>Aca encontrarán un resumen de los contenidos vistos en clase que se iran añadiendo a medida que avanzamos en la materia.</p>
+    </div>
+
+    <div class="timeline">
+
+      <article class="class-card">
+        <div class="class-card-marker">01</div>
+        <a class="class-card-link-block" href="clases/clase-01-intro.html">
+          <p class="class-card-tag">Introducción</p>
+          <h3>Bases de datos: Introducción y conceptos iniciales</h3>
+          <p>Definición, DBMS, tipos de bases, modelo relacional, ventajas, desventajas y motores SQL comunes.</p>
+          <div class="class-card-foot">
+            <span>clase_01</span>
+            <span class="go">Ver clase →</span>
+          </div>
+        </a>
+      </article>
+
+      <article class="class-card">
+        <div class="class-card-marker">02</div>
+        <a class="class-card-link-block" href="clases/clase-02-modelado-normalizacion.html">
+          <p class="class-card-tag">Normalización</p>
+          <h3>Modelado y Normalización de datos</h3>
+          <p>Separar una tabla sin normalizar en tablas relacionadas para evitar repetición e inconsistencias.</p>
+          <div class="class-card-foot">
+            <span>clase_02</span>
+            <span class="go">Ver clase →</span>
+          </div>
+        </a>
+      </article>
+
+
+      <article class="class-card">
+        <div class="class-card-marker">...</div>
+        <div class="class-card-link-block upcoming-card">
+          <p class="class-card-tag">En preparación</p>
+          <h3>Próximamente</h3>
+          <p>Las siguientes clases se irán publicando a medida que avancemos....</p>
+          <div class="class-card-foot">
+            <span>nuevas_clases</span>
+            <span>En desarrollo</span>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<section id="grabaciones">
+  <div class="wrap">
+    <div class="recordings-cta">
+      <div>
+        <p class="eyebrow">Material complementario</p>
+        <h2>Clases grabadas</h2>
+        <p>Acceso directo a las grabaciones de las clases para repasar los contenidos.</p>
+      </div>
+      <a class="button-link" href="clases-grabadas.html">Ver grabaciones</a>
+    </div>
+  </div>
+</section>
+
+<div data-site-footer></div>
+
+<script src="assets/js/layout.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

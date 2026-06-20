@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Normalización de datos — Bases de Datos</title>
+<meta name="description" content="Normalización de una tabla de empleados: de una tabla sin normalizar a tablas relacionadas para empleados, áreas, ciudades, provincias, teléfonos y emails." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<div data-site-header></div>
+
+<header class="class-header">
+  <div class="wrap">
+    <p class="breadcrumb"><a href="../index.html">Inicio</a> / <a href="../index.html#plan">Clases</a> / clase_02</p>
+    <div class="class-meta">
+      <span class="class-pk-badge">PK 02</span>
+      <span class="topic-tag">Normalización</span>
+    </div>
+    <h1>Normalización de datos</h1>
+  </div>
+</header>
+
+<article class="class-body">
+  <div class="wrap">
+
+    <h2>Objetivo</h2>
+    <p>Ver cómo una tabla de empleados con datos mezclados, repetidos y multivaluados puede transformarse en varias tablas relacionadas mediante claves primarias y claves foráneas.</p>
+
+    <div class="callout">
+      <span class="callout-label">Idea clave</span>
+      <p>Normalizar no es partir una tabla porque sí: es separar datos según su significado para reducir repetición, evitar inconsistencias y permitir relaciones claras entre entidades.</p>
+    </div>
+
+    <div class="lesson-tabs" data-tabs>
+      <div class="tab-list" role="tablist" aria-label="Vistas de normalización">
+        <button class="tab-button active" type="button" role="tab" aria-selected="true" aria-controls="tab-original" id="btn-original" data-tab-target="tab-original">Tabla original</button>
+        <button class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="tab-normalizada" id="btn-normalizada" data-tab-target="tab-normalizada">Datos normalizados</button>
+        <button class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="tab-proceso" id="btn-proceso" data-tab-target="tab-proceso">Proceso</button>
+      </div>
+
+      <section class="tab-panel active" role="tabpanel" id="tab-original" aria-labelledby="btn-original">
+        <h2>Tabla sin normalizar</h2>
+        <p>La hoja original guarda todos los datos del empleado en una sola estructura. Eso la vuelve fácil de leer al principio, pero difícil de mantener cuando aparecen datos repetidos o más de un valor para el mismo campo.</p>
+
+        <div class="table-scroll">
+          <table class="data-table dense-table source-table">
+            <thead>
+              <tr>
+                <th data-source="nombre">Nombre completo</th>
+                <th>DNI</th>
+                <th>Fecha nac.</th>
+                <th data-source="telefonos">Teléfono 1</th>
+                <th data-source="telefonos">Teléfono 2</th>
+                <th data-source="emails">Email</th>
+                <th data-source="domicilio">Domicilio</th>
+                <th data-source="area">Área</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-source="nombre">Perez Juan</td>
+                <td>31111223</td>
+                <td>1983-05-10</td>
+                <td data-source="telefonos">2227-511515</td>
+                <td data-source="telefonos">2227-61254</td>
+                <td data-source="emails">juanp@gmail.com; juanperez@empresa.com</td>
+                <td data-source="domicilio">Necochea 211, Lobos, BsAs</td>
+                <td data-source="area">Ventas</td>
+              </tr>
+              <tr>
+                <td data-source="nombre">Gomez Juan</td>
+                <td>24098743</td>
+                <td>1982-09-21</td>
+                <td data-source="telefonos">2227-431542</td>
+                <td data-source="telefonos">2227-516431</td>
+                <td data-source="emails">g_juan@gmail.com; juangomez@empresa.com</td>
+                <td data-source="domicilio">Sarmiento 100, Lobos, Buenos Aires</td>
+                <td data-source="area">Sistemas</td>
+              </tr>
+              <tr>
+                <td data-source="nombre">Lopez Carla</td>
+                <td>30164987</td>
+                <td>1981-10-01</td>
+                <td data-source="telefonos">2226-468795</td>
+                <td data-source="telefonos">2226-45698</td>
+                <td data-source="emails">lopezcarla@gmail.com; carlalopez@empresa.com</td>
+                <td data-source="domicilio">San Martin 123, Cañuelas, Bs As</td>
+                <td data-source="area">Ventas</td>
+              </tr>
+              <tr>
+                <td data-source="nombre">Lopez Jose</td>
+                <td>40158366</td>
+                <td>1999-01-05</td>
+                <td data-source="telefonos">1234-546876</td>
+                <td data-source="telefonos"></td>
+                <td data-source="emails">lopezj@gmail.com; joselopez@empresa.com</td>
+                <td data-source="domicilio">Belgrano 235, Rosario, Santa Fe</td>
+                <td data-source="area">Contable</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2>Problemas detectados</h2>
+        <div class="problem-grid">
+          <button type="button" class="problem-card" data-problem="pk">
+            <span class="problem-label">Sin clave principal</span>
+            <span>No existe un identificador propio para cada registro.</span>
+          </button>
+          <button type="button" class="problem-card" data-problem="nombre">
+            <span class="problem-label">Datos combinados</span>
+            <span>Nombre completo mezcla apellido y nombre en una sola columna.</span>
+          </button>
+          <button type="button" class="problem-card" data-problem="telefonos">
+            <span class="problem-label">Columnas repetidas</span>
+            <span>Teléfono 1 y Teléfono 2 repiten el mismo tipo de dato.</span>
+          </button>
+          <button type="button" class="problem-card" data-problem="emails">
+            <span class="problem-label">Listas en columnas</span>
+            <span>Email guarda más de un valor separado por punto y coma.</span>
+          </button>
+          <button type="button" class="problem-card" data-problem="domicilio">
+            <span class="problem-label">Domicilio compuesto</span>
+            <span>Calle, ciudad y provincia aparecen pegadas en el mismo campo.</span>
+          </button>
+          <button type="button" class="problem-card" data-problem="area">
+            <span class="problem-label">Datos repetidos</span>
+            <span>Área se escribe muchas veces aunque representa una entidad propia.</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="tab-panel" role="tabpanel" id="tab-normalizada" aria-labelledby="btn-normalizada" hidden>
+        <h2>Resultado normalizado</h2>
+        <p>La segunda hoja separa la información en tablas con identificadores. La tabla <strong>Empleados</strong> conserva los datos propios de la persona y se relaciona con tablas auxiliares mediante claves.</p>
+
+        <div class="schema-grid">
+          <section class="schema-table" data-target="empleados">
+            <h3>Empleados</h3>
+            <div class="table-scroll">
+              <table class="data-table dense-table">
+                <thead>
+                  <tr><th>IDEmpleado</th><th>Apellido</th><th>Nombre</th><th>DNI</th><th>Fecha_nac</th><th>Domicilio</th><th>IDCiudad</th><th>IDArea</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>1</td><td>Perez</td><td>Juan</td><td>31111223</td><td>1983-05-10</td><td>Necochea 211</td><td>1</td><td>1</td></tr>
+                  <tr><td>2</td><td>Gomez</td><td>Juan</td><td>24098743</td><td>1982-09-21</td><td>Sarmiento 100</td><td>1</td><td>2</td></tr>
+                  <tr><td>3</td><td>Lopez</td><td>Carla</td><td>30164987</td><td>1981-10-01</td><td>San Martin 123</td><td>2</td><td>1</td></tr>
+                  <tr><td>4</td><td>Lopez</td><td>Jose</td><td>40158366</td><td>1999-01-05</td><td>Belgrano 235</td><td>3</td><td>3</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="schema-table" data-target="areas">
+            <h3>Áreas</h3>
+            <table class="data-table dense-table">
+              <thead><tr><th>IDArea</th><th>Área</th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td>Ventas</td></tr>
+                <tr><td>2</td><td>Sistemas</td></tr>
+                <tr><td>3</td><td>Contable</td></tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section class="schema-table" data-target="telefonos">
+            <h3>Teléfonos</h3>
+            <table class="data-table dense-table">
+              <thead><tr><th>IDTelefono</th><th>IDEmpleado</th><th>Teléfono</th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td>1</td><td>2227-511515</td></tr>
+                <tr><td>2</td><td>1</td><td>2227-61254</td></tr>
+                <tr><td>3</td><td>2</td><td>2227-431542</td></tr>
+                <tr><td>4</td><td>2</td><td>2227-516431</td></tr>
+                <tr><td>5</td><td>3</td><td>2226-468795</td></tr>
+                <tr><td>6</td><td>3</td><td>2226-45698</td></tr>
+                <tr><td>7</td><td>4</td><td>1234-546876</td></tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section class="schema-table" data-target="emails">
+            <h3>Emails</h3>
+            <table class="data-table dense-table">
+              <thead><tr><th>IDEmail</th><th>IDEmpleado</th><th>Email</th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td>1</td><td>juanp@gmail.com</td></tr>
+                <tr><td>2</td><td>1</td><td>juanperez@empresa.com</td></tr>
+                <tr><td>3</td><td>2</td><td>g_juan@gmail.com</td></tr>
+                <tr><td>4</td><td>2</td><td>juangomez@empresa.com</td></tr>
+                <tr><td>5</td><td>3</td><td>lopezcarla@gmail.com</td></tr>
+                <tr><td>6</td><td>3</td><td>carlalopez@empresa.com</td></tr>
+                <tr><td>7</td><td>4</td><td>lopezj@gmail.com</td></tr>
+                <tr><td>8</td><td>4</td><td>joselopez@empresa.com</td></tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section class="schema-table" data-target="ciudades">
+            <h3>Ciudades</h3>
+            <table class="data-table dense-table">
+              <thead><tr><th>IDCiudad</th><th>Ciudad</th><th>IDPcia</th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td>Lobos</td><td>1</td></tr>
+                <tr><td>2</td><td>Cañuelas</td><td>1</td></tr>
+                <tr><td>3</td><td>Rosario</td><td>2</td></tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section class="schema-table" data-target="provincias">
+            <h3>Provincias</h3>
+            <table class="data-table dense-table">
+              <thead><tr><th>IDPcia</th><th>Provincia</th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td>Buenos Aires</td></tr>
+                <tr><td>2</td><td>Santa Fe</td></tr>
+              </tbody>
+            </table>
+          </section>
+        </div>
+      </section>
+
+      <section class="tab-panel" role="tabpanel" id="tab-proceso" aria-labelledby="btn-proceso" hidden>
+        <h2>Proceso paso a paso</h2>
+        <p>La normalización se puede pensar como una serie de preguntas simples. En cada paso miramos qué hay en la tabla original, qué problema trae y cómo queda en el modelo normalizado.</p>
+
+        <div class="callout">
+          <span class="callout-label">Regla práctica</span>
+          <p>Si un dato se repite, se mezcla con otro dato o puede aparecer varias veces para la misma persona, probablemente conviene separarlo.</p>
+        </div>
+
+        <div class="process-layout">
+          <div class="process-steps" aria-label="Pasos de normalización">
+            <button type="button" class="map-step active" data-problem="pk"><span>1</span> Dar un identificador</button>
+            <button type="button" class="map-step" data-problem="nombre"><span>2</span> Separar nombre y apellido</button>
+            <button type="button" class="map-step" data-problem="telefonos"><span>3</span> Pasar teléfonos a filas</button>
+            <button type="button" class="map-step" data-problem="emails"><span>4</span> Pasar emails a filas</button>
+            <button type="button" class="map-step" data-problem="domicilio"><span>5</span> Separar domicilio y ubicación</button>
+            <button type="button" class="map-step" data-problem="area"><span>6</span> Crear tabla de áreas</button>
+          </div>
+
+          <div class="process-detail" aria-live="polite">
+            <p class="process-kicker">Paso activo</p>
+            <h3 id="step-title">Dar un identificador a cada empleado</h3>
+
+            <div class="before-after-grid">
+              <div>
+                <span class="mini-label">Antes</span>
+                <p id="step-before">La fila no tiene una clave propia. Para reconocer a un empleado dependemos de datos como DNI o nombre.</p>
+              </div>
+              <div>
+                <span class="mini-label">Después</span>
+                <p id="step-after">Se agrega <code>IDEmpleado</code> como clave primaria de la tabla Empleados.</p>
+              </div>
+            </div>
+
+            <div class="callout normalization-note">
+              <span class="callout-label">Por qué mejora</span>
+              <p id="normalization-note">Con una clave primaria podemos relacionar teléfonos, emails, ciudad y área con la persona correcta sin copiar todos sus datos.</p>
+            </div>
+
+            <div class="process-tags">
+              <div>
+                <span class="mini-label">Dato de origen</span>
+                <div class="field-list">
+                  <span class="field-pill" data-source="pk">Registro sin ID</span>
+                  <span class="field-pill" data-source="nombre">Nombre completo</span>
+                  <span class="field-pill" data-source="telefonos">Teléfono 1 / Teléfono 2</span>
+                  <span class="field-pill" data-source="emails">Email con lista</span>
+                  <span class="field-pill" data-source="domicilio">Domicilio completo</span>
+                  <span class="field-pill" data-source="area">Área repetida</span>
+                </div>
+              </div>
+              <div>
+                <span class="mini-label">Tabla donde queda</span>
+                <div class="target-list">
+                  <span class="target-pill" data-target="empleados">Empleados</span>
+                  <span class="target-pill" data-target="telefonos">Teléfonos</span>
+                  <span class="target-pill" data-target="emails">Emails</span>
+                  <span class="target-pill" data-target="ciudades">Ciudades</span>
+                  <span class="target-pill" data-target="provincias">Provincias</span>
+                  <span class="target-pill" data-target="areas">Áreas</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h2>Relaciones resultantes</h2>
+        <div class="code-block"><pre><code>Empleados.IDArea    -> Areas.IDArea
+Empleados.IDCiudad  -> Ciudades.IDCiudad
+Ciudades.IDPcia     -> Provincias.IDPcia
+Telefonos.IDEmpleado -> Empleados.IDEmpleado
+Emails.IDEmpleado    -> Empleados.IDEmpleado</code></pre></div>
+      </section>
+    </div>
+<!--
+    <h2>Actividad para clase</h2>
+    <p>Partiendo de otra lista sin normalizar, identificar campos repetidos, campos con más de un valor y datos que puedan convertirse en tablas propias. Luego proponer las claves primarias y foráneas necesarias.</p>
+  -->
+  </div>
+</article>
+
+<div class="wrap">
+  <nav class="class-pagination">
+    <a class="page-link prev" href="clase-01-intro.html">
+      <span class="dir">← Clase anterior</span>
+      <span class="title">Bases de datos: conceptos iniciales</span>
+    </a>
+    <!--
+    <a class="page-link next" href="clase-03-subconsultas.html">
+      <span class="dir">Clase siguiente →</span>
+      <span class="title">Subconsultas</span>
+    </a>
+  -->
+  </nav>
+</div>
+
+<div data-site-footer></div>
+
+<script src="../assets/js/layout.js"></script>
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/sql-highlight.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const tabRoot = document.querySelector("[data-tabs]");
+  if (tabRoot) {
+    const buttons = [...tabRoot.querySelectorAll("[data-tab-target]")];
+    const panels = [...tabRoot.querySelectorAll(".tab-panel")];
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const targetId = button.dataset.tabTarget;
+        buttons.forEach((item) => {
+          const active = item === button;
+          item.classList.toggle("active", active);
+          item.setAttribute("aria-selected", active ? "true" : "false");
+        });
+        panels.forEach((panel) => {
+          const active = panel.id === targetId;
+          panel.classList.toggle("active", active);
+          panel.hidden = !active;
+        });
+      });
+    });
+  }
+
+  const notes = {
+    pk: {
+      title: "Dar un identificador a cada empleado",
+      sources: ["pk"],
+      targets: ["empleados", "telefonos", "emails"],
+      before: "La fila no tiene una clave propia. Para reconocer a un empleado dependemos de datos como DNI o nombre.",
+      after: "Se agrega IDEmpleado como clave primaria de la tabla Empleados.",
+      text: "Con una clave primaria podemos relacionar teléfonos, emails, ciudad y área con la persona correcta sin copiar todos sus datos."
+    },
+    nombre: {
+      title: "Separar nombre y apellido",
+      sources: ["nombre"],
+      targets: ["empleados"],
+      before: "La columna Nombre completo guarda dos datos juntos: apellido y nombre.",
+      after: "En Empleados quedan dos columnas: Apellido y Nombre.",
+      text: "Cada columna debe guardar un solo tipo de dato. Así podemos ordenar por apellido, buscar por nombre o validar cada campo por separado."
+    },
+    telefonos: {
+      title: "Pasar los teléfonos a filas",
+      sources: ["telefonos"],
+      targets: ["telefonos"],
+      before: "La tabla tiene Teléfono 1 y Teléfono 2. Si mañana una persona tiene tres teléfonos, habría que agregar otra columna.",
+      after: "Se crea la tabla Teléfonos. Cada número ocupa una fila y apunta al empleado mediante IDEmpleado.",
+      text: "Cuando un empleado puede tener varios valores del mismo tipo, conviene usar varias filas en otra tabla, no varias columnas repetidas."
+    },
+    emails: {
+      title: "Pasar los emails a filas",
+      sources: ["emails"],
+      targets: ["emails"],
+      before: "La columna Email guarda una lista separada por punto y coma.",
+      after: "Se crea la tabla Emails. Cada dirección queda en una fila relacionada con IDEmpleado.",
+      text: "Una celda no debería guardar una lista. Separar los emails permite buscar, validar o eliminar uno sin tocar los demás."
+    },
+    domicilio: {
+      title: "Separar dirección, ciudad y provincia",
+      sources: ["domicilio"],
+      targets: ["empleados", "ciudades", "provincias"],
+      before: "Domicilio mezcla calle, número, ciudad y provincia en un texto largo.",
+      after: "Empleados conserva la dirección, Ciudades guarda la ciudad y Provincias guarda la provincia.",
+      text: "Separar ubicación evita escribir la misma ciudad o provincia de muchas maneras, por ejemplo BsAs, Bs As o Buenos Aires."
+    },
+    area: {
+      title: "Crear una tabla para áreas",
+      sources: ["area"],
+      targets: ["areas"],
+      before: "Área se repite como texto en cada empleado: Ventas aparece más de una vez.",
+      after: "Se crea la tabla Áreas y Empleados guarda IDArea como clave foránea.",
+      text: "Si el nombre de un área cambia, se corrige una sola vez en la tabla Áreas, no en todos los empleados."
+    }
+  };
+
+  const activateProblem = (key) => {
+    const config = notes[key];
+    if (!config) return;
+
+    document.querySelectorAll("[data-problem]").forEach((item) => {
+      item.classList.toggle("active", item.dataset.problem === key);
+    });
+
+    document.querySelectorAll("[data-source]").forEach((item) => {
+      item.classList.toggle("is-highlighted", config.sources.includes(item.dataset.source));
+    });
+
+    document.querySelectorAll(".target-pill[data-target]").forEach((item) => {
+      item.classList.toggle("is-highlighted", config.targets.includes(item.dataset.target));
+    });
+
+    const title = document.getElementById("step-title");
+    const before = document.getElementById("step-before");
+    const after = document.getElementById("step-after");
+    const note = document.getElementById("normalization-note");
+    if (title) title.textContent = config.title;
+    if (before) before.textContent = config.before;
+    if (after) after.textContent = config.after;
+    if (note) note.textContent = config.text;
+  };
+
+  document.querySelectorAll("[data-problem]").forEach((item) => {
+    item.addEventListener("click", () => activateProblem(item.dataset.problem));
+  });
+
+  activateProblem("pk");
+});
+</script>
+</body>
+</html>

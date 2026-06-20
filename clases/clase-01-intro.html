@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bases de datos: conceptos iniciales — Bases de Datos</title>
+<meta name="description" content="Introducción a las bases de datos, tipos principales, bases relacionales, ventajas, desventajas y motores SQL comunes." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<div data-site-header></div>
+
+<header class="class-header">
+  <div class="wrap">
+    <p class="breadcrumb"><a href="../index.html">Inicio</a> / <a href="../index.html#plan">Clases</a> / clase_01</p>
+    <div class="class-meta">
+      <span class="class-pk-badge">PK 01</span>
+      <span class="topic-tag">Introducción</span>
+    </div>
+    <h1>Bases de datos: conceptos iniciales</h1>
+  </div>
+</header>
+
+<article class="class-body">
+  <div class="wrap">
+
+    <h2>Objetivo</h2>
+    <p>Comprender qué es una base de datos, por qué se utiliza un sistema de gestión de bases de datos y cuáles son las diferencias principales entre bases relacionales y no relacionales.</p>
+
+    <div class="callout">
+      <span class="callout-label">Idea clave</span>
+      <p>Una base de datos permite almacenar información de forma ordenada para recuperarla, analizarla, transmitirla y mantenerla con mayor consistencia que en una lista aislada.</p>
+    </div>
+
+    <h2>Qué es una base de datos</h2>
+    <p>Una base de datos es un conjunto de información perteneciente a un mismo contexto, organizada de manera sistemática y almacenada electrónicamente. Puede contener distintos tipos de datos: texto, números, imágenes, archivos u otros registros necesarios para una aplicación.</p>
+    <p>Muchas bases comienzan como una lista en una hoja de cálculo o en un procesador de texto. Cuando esa lista crece, suelen aparecer redundancias, inconsistencias y dificultades para buscar o extraer subconjuntos de información.</p>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Cuando los datos crecen</th>
+          <th>Qué problema aparece</th>
+          <th>Qué aporta una base de datos</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Hay muchas filas repetidas o parecidas</td>
+          <td>Redundancia de datos</td>
+          <td>Diseño organizado y menor duplicación</td>
+        </tr>
+        <tr>
+          <td>La información se actualiza en varios lugares</td>
+          <td>Inconsistencias</td>
+          <td>Reglas de integridad y actualización controlada</td>
+        </tr>
+        <tr>
+          <td>Se necesitan búsquedas más precisas</td>
+          <td>Extracción limitada de datos</td>
+          <td>Consultas, filtros y relaciones entre tablas</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>DBMS o sistema de gestión</h2>
+    <p>Un <strong>DBMS</strong> es un sistema de administración de bases de datos. Su función es facilitar el almacenamiento ordenado, la recuperación rápida, la protección y la manipulación de la información.</p>
+    <p>Cuando una lista empieza a ser difícil de mantener, pasarla a una base de datos creada con un DBMS ayuda a organizar los datos, controlar accesos y evitar errores frecuentes.</p>
+
+    <h2>Tipos principales de bases de datos</h2>
+    <p>Existen varios modelos, pero para esta materia vamos a distinguir dos familias importantes: bases relacionales o SQL, y bases no relacionales o NoSQL.</p>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Tipo</th>
+          <th>Cómo organiza los datos</th>
+          <th>Uso habitual</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>SQL o relacional</strong></td>
+          <td>Usa tablas con filas y columnas que pueden relacionarse mediante claves.</td>
+          <td>Aplicaciones donde importa la estructura, la consistencia y las consultas con SQL.</td>
+        </tr>
+        <tr>
+          <td><strong>NoSQL o no relacional</strong></td>
+          <td>No sigue necesariamente el esquema tradicional de tablas; puede usar documentos, clave-valor, grafos u otros modelos.</td>
+          <td>Grandes volúmenes de datos distribuidos o estructuras más flexibles y cambiantes.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <span class="callout-label">Criterio de elección</span>
+      <p>No hay un tipo universalmente mejor. La elección depende de las necesidades del proyecto, la forma de los datos, el volumen esperado y las operaciones que se van a realizar.</p>
+    </div>
+
+    <h2>Bases de datos relacionales</h2>
+    <p>Una base de datos relacional organiza la información en <strong>tablas</strong> relacionadas entre sí mediante <strong>claves primarias</strong> y <strong>claves externas</strong>.</p>
+    <ul>
+      <li>Cada <strong>tabla</strong> representa un conjunto de datos sobre una entidad o concepto.</li>
+      <li>Cada <strong>fila</strong> representa un registro único dentro de la tabla.</li>
+      <li>Cada <strong>columna</strong> representa un atributo de esa entidad.</li>
+      <li>La <strong>clave primaria</strong> identifica de manera única cada fila.</li>
+      <li>La <strong>clave externa</strong> permite vincular una tabla con otra.</li>
+    </ul>
+
+    <div class="code-block"><pre><code>Tabla Cliente
+PK IdCliente
+Nombre
+Email
+
+Tabla Pedido
+PK IdPedido
+FK IdCliente
+Fecha
+Total
+
+Cliente (1) -------- (N) Pedido</code></pre></div>
+
+    <h2>Ventajas de las bases relacionales</h2>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Ventaja</th>
+          <th>Qué significa</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Estructura organizada</td>
+          <td>La forma tabular permite guardar los datos de manera ordenada y consultable.</td>
+        </tr>
+        <tr>
+          <td>Integridad de datos</td>
+          <td>Las relaciones entre tablas ayudan a mantener coherencia y evitar duplicación innecesaria.</td>
+        </tr>
+        <tr>
+          <td>Flexibilidad de consulta</td>
+          <td>SQL permite realizar búsquedas, filtros y combinaciones entre múltiples tablas.</td>
+        </tr>
+        <tr>
+          <td>Escalabilidad</td>
+          <td>Pueden crecer para manejar grandes volúmenes de datos y usuarios concurrentes.</td>
+        </tr>
+        <tr>
+          <td>Seguridad</td>
+          <td>Los DBMS ofrecen mecanismos de autenticación, autorización y control de acceso.</td>
+        </tr>
+        <tr>
+          <td>Compatibilidad con estándares</td>
+          <td>SQL es un lenguaje ampliamente aceptado y facilita la interoperabilidad con otras herramientas.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Desventajas a considerar</h2>
+    <ul>
+      <li><strong>Complejidad de diseño:</strong> los sistemas con muchas tablas y relaciones requieren una planificación cuidadosa.</li>
+      <li><strong>Rendimiento en escalas extremadamente grandes:</strong> las consultas complejas y la integridad referencial pueden impactar en bases muy grandes.</li>
+      <li><strong>Rigidez en la estructura:</strong> los cambios frecuentes en la forma de los datos pueden ser más difíciles que en algunos modelos NoSQL.</li>
+      <li><strong>Escalabilidad horizontal:</strong> sumar servidores puede ser más complejo que aumentar recursos de hardware en un único servidor.</li>
+    </ul>
+
+    <div class="callout warning">
+      <span class="callout-label">Para recordar</span>
+      <p>Una base relacional no empieza en SQL: empieza en el diseño. Antes de escribir consultas conviene entender qué entidades existen, qué atributos tienen y cómo se relacionan.</p>
+    </div>
+
+    <h2>Bases SQL más comunes</h2>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Motor</th>
+          <th>Descripción breve</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Microsoft SQL Server</td>
+          <td>Base relacional de Microsoft, integrada con tecnologías como .NET Framework y Visual Studio.</td>
+        </tr>
+        <tr>
+          <td>MySQL</td>
+          <td>Base relacional de código abierto, muy usada en aplicaciones web y empresariales.</td>
+        </tr>
+        <tr>
+          <td>PostgreSQL</td>
+          <td>Base relacional de código abierto con funciones avanzadas, transacciones, replicación y tipos de datos personalizados.</td>
+        </tr>
+        <tr>
+          <td>Oracle Database</td>
+          <td>Motor relacional usado en organizaciones y empresas, con foco en disponibilidad, seguridad y escalabilidad.</td>
+        </tr>
+        <tr>
+          <td>SQLite</td>
+          <td>Base SQL ligera, frecuente en aplicaciones móviles y embebidas por su tamaño compacto.</td>
+        </tr>
+        <tr>
+          <td>IBM Db2</td>
+          <td>Base relacional de IBM orientada a entornos empresariales y aplicaciones críticas.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!--
+    <h2>Actividad para clase</h2>
+    <p>Tomar una lista simple de datos, por ejemplo alumnos, cursos, productos o turnos, y responder:</p>
+    <ol>
+      <li>¿Qué datos se repiten si se guardan en una sola lista?</li>
+      <li>¿Qué entidades podrían separarse en tablas?</li>
+      <li>¿Qué dato identificaría de manera única a cada registro?</li>
+      <li>¿Qué relación podría existir entre esas tablas?</li>
+    </ol>
+  -->
+  </div>
+</article>
+
+<div class="wrap">
+  <nav class="class-pagination">
+    <span></span>
+    <a class="page-link next" href="clase-02-modelado-normalizacion.html">
+      <span class="dir">Clase siguiente →</span>
+      <span class="title">Normalización de datos</span>
+    </a>
+  </nav>
+</div>
+
+<div data-site-footer></div>
+
+<script src="../assets/js/layout.js"></script>
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/sql-highlight.js"></script>
+</body>
+</html>
